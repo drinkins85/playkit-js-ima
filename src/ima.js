@@ -370,7 +370,10 @@ class Ima extends BasePlugin implements IMiddlewareProvider, IAdsControllerProvi
           this.dispatchEvent(this.player.Event.AD_WATERFALLING_FAILED);
         }
         this._stateMachine.adlog(error);
-        playNext();
+        // Go to next ad if param stopOnError not setted
+        if (!ad.stopOnError) {
+          playNext();
+        }
       }
     };
     if (ad) {
@@ -419,11 +422,8 @@ class Ima extends BasePlugin implements IMiddlewareProvider, IAdsControllerProvi
   skipAd(): void {
     this.logger.debug('Skip ad');
     if (this._adsManager) {
-      if (this._adsManager.getAdSkippableState()) {
-        this._adsManager.skip();
-      } else if (this.config.skipSupport) {
-        this._adsManager.stop();
-      }
+      // remove SkippableState check
+      this._adsManager.skip();
     }
   }
 
